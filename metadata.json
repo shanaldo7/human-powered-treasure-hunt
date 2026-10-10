@@ -1,0 +1,6 @@
+{
+  "name": "Human-Powered Treasure Hunt",
+  "description": "AI creates the clues. You find them in the real world. Real-world exploration using Gemini and Google Maps.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

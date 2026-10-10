@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-serif: 'Cinzel', serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: #050811;
+    color: #f1f5f9;
+    min-height: 100vh;
+  }
+
+  h1, h2, h3, .font-serif-hunt {
+    font-family: var(--font-serif);
+  }
+
+  code, pre, .font-mono-hunt {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Subtle map contour background pattern */
+.bg-topo-pattern {
+  background-color: #050811;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.08) 0%, transparent 60%),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 48px 48px, 48px 48px;
+}
+
+/* Subtle adventure card styling */
+.card-adventure {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.75) 0%, rgba(10, 16, 31, 0.9) 100%);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.card-adventure:hover {
+  border-color: rgba(217, 119, 6, 0.4);
+}
+
+/* Custom subtle scrollbars for field exploration boards */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #070b14;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Pulse animation for active exploration beacon */
+@keyframes pulse-amber {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.03); }
+}
+
+.animate-hunt-pulse {
+  animation: pulse-amber 2s infinite ease-in-out;
+}
+
+/* Subtle shimmer for scanning/loading */
+@keyframes shimmer-radar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-radar-sweep {
+  animation: shimmer-radar 4s linear infinite;
+}
