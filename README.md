@@ -1,11 +1,11 @@
-# 🏴‍☠️ UNT — Human-Powered AI: Treasure Hunt
+# 🏴‍☠️ Human-Powered AI: Treasure Hunt
 
 > **"AI creates the clues. You find them in the real world."**
 > 
 > *AI-powered real-world treasure hunts with live research, Google Maps navigation, and Google Lens-assisted discovery.*
 
 ---
-
+##working link:https://human-powered-treasure-hunt.ai.studio/
 ## 🌟 Overview & Product Concept
 
 Most AI applications attempt to keep users staring at screens. **UNT — Human-Powered AI: Treasure Hunt** does the exact opposite: it turns digital intelligence into real-world physical exploration.
