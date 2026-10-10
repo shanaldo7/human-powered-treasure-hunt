@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 import { geminiHuntService } from './src/services/geminiHuntService';
@@ -532,12 +533,62 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
-// Setup Vite Dev Middleware or Static Serving
+// Resolve frontend dist directory reliably across build layouts
+function getFrontendDistPath(): string {
+  // 1. If running compiled dist/server.js: __dirname IS the dist directory
+  // When compiled to dist/server.js, path.basename(__dirname) is 'dist'.
+  if (path.basename(__dirname) === 'dist') {
+    return __dirname;
+  }
+
+  // 2. If running from project root (e.g. tsx server.ts), dist is a subfolder
+  const localDist = path.join(__dirname, 'dist');
+  if (fs.existsSync(localDist)) {
+    return localDist;
+  }
+
+  // 3. Fallback based on process.cwd()
+  if (path.basename(process.cwd()) === 'dist') {
+    return process.cwd();
+  }
+  return path.join(process.cwd(), 'dist');
+}
+
+// Setup Vite Dev Middleware or Production Static Serving
 async function setupServer() {
-  if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'dist')));
+  const isProduction = process.env.NODE_ENV === 'production' || __filename.includes('dist');
+
+  if (isProduction) {
+    const distPath = getFrontendDistPath();
+    console.log(`[PRODUCTION] Serving static frontend from: ${distPath}`);
+
+    // Serve built static assets from dist
+    app.use(express.static(distPath, {
+      index: false,
+      maxAge: '1d'
+    }));
+
+    // Explicit 404 for unhandled API requests (must return JSON 404, not HTML)
+    app.use('/api', (req, res) => {
+      res.status(404).json({ error: `API route not found: ${req.method} ${req.originalUrl}` });
+    });
+
+    // Explicit 404 for missing static assets (prevent returning index.html for missing scripts/styles/images)
+    app.use((req, res, next) => {
+      if (req.path.startsWith('/assets/') || path.extname(req.path)) {
+        return res.status(404).type('text/plain').send('404 Not Found');
+      }
+      next();
+    });
+
+    // SPA fallback: return index.html for client-side React routes (e.g. /, /hunt, /profile, /radar)
     app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      const indexPath = path.join(distPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).type('text/plain').send('Frontend build not found. Please run npm run build.');
+      }
     });
   } else {
     const { createServer: createViteServer } = await import('vite');
